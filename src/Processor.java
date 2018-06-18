@@ -2,6 +2,8 @@ import java.util.*;
 
 public class Processor {
 
+    public static final int ADDRESS_SIZE = 12;
+
     private int cursor;
     private List<Vector<Integer>> program;
     private Map<Integer, Instruction> instructions;
@@ -14,12 +16,21 @@ public class Processor {
         memory = new Memory();
     }
 
+    public void moveCursor(int value) {
+        cursor += value;
+    }
+
     public void execute() {
 
-        do {
+        while (cursor < program.size()) {
             Vector<Integer> line = program.get(cursor);
 
             Instruction instruction = instructions.get(line.get(0));
+
+            if (instruction == null) {
+                System.err.println("invalid instruction");
+                System.exit(-3);
+            }
 
             for (int i = 1; i < line.size(); i++) {
                 instruction.addParameters(line.get(i));
@@ -30,7 +41,7 @@ public class Processor {
             instruction.execute();
 
             cursor++;
-        } while (cursor < program.size());
+        }
 
     }
 

@@ -1,15 +1,16 @@
-import java.util.Vector;
+import java.util.ArrayDeque;
+import java.util.Queue;
 
 public abstract class Instruction {
 
     Processor processor;
-    Vector<Integer> parameters;
+    Queue<Integer> parameters;
     private int code;
 
     public Instruction(int code) {
         this.code = code;
         processor = null;
-        parameters = new Vector<>();
+        parameters = new ArrayDeque<>();
     }
 
     public int getCode() {
@@ -18,6 +19,17 @@ public abstract class Instruction {
 
     public void addParameters(int p) {
         parameters.add(p);
+    }
+
+    public Integer[] readAddress() {
+
+        Integer[] address = new Integer[Processor.ADDRESS_SIZE];
+
+        for (int i = 0; i < address.length; i++) {
+            address[i] = parameters.remove();
+        }
+
+        return address;
     }
 
     public abstract void execute();
