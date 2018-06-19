@@ -23,7 +23,7 @@ public abstract class Operation {
         parameters.add(p);
     }
 
-    public Integer[] readAddress() {
+    Integer[] readAddress() {
 
         Integer[] address = new Integer[Processor.ADDRESS_SIZE];
 

@@ -22,9 +22,6 @@ public class App {
 
     public static void main(String[] args) throws IOException {
 
-        final String headAddr = "0123456789";
-
-
         Dictionnary dictionnary = new Dictionnary();
 
         Processor processor = new Processor();
@@ -37,6 +34,11 @@ public class App {
         processor.setupNewInstruction(new OperationEql());
         processor.setupNewInstruction(new OperationInf());
         processor.setupNewInstruction(new OperationMod());
+        processor.setupNewInstruction(new OperationMov());
+        processor.setupNewInstruction(new OperationSup());
+        processor.setupNewInstruction(new OperationNot());
+        processor.setupNewInstruction(new OperationAnd());
+        processor.setupNewInstruction(new OperationOr());
 
 
         BufferedReader reader = new BufferedReader(new FileReader("prog.txt"));

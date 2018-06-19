@@ -25,6 +25,7 @@ public class Processor {
     public void execute() {
 
         while (cursor < program.size()) {
+
             Vector<Integer> line = program.get(cursor);
 
             Operation operation = operations.get(line.get(0));
