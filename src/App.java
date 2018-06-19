@@ -29,14 +29,14 @@ public class App {
 
         Processor processor = new Processor();
 
-        processor.setupNewInstruction(new InstructionSet());
-        processor.setupNewInstruction(new InstructionAdd());
-        processor.setupNewInstruction(new InstructionSub());
-        processor.setupNewInstruction(new InstructionJmp());
-        processor.setupNewInstruction(new InstructionCon());
-        processor.setupNewInstruction(new InstructionEql());
-        processor.setupNewInstruction(new InstructionInf());
-        processor.setupNewInstruction(new InstructionMod());
+        processor.setupNewInstruction(new OperationSet());
+        processor.setupNewInstruction(new OperationAdd());
+        processor.setupNewInstruction(new OperationSub());
+        processor.setupNewInstruction(new OperationJmp());
+        processor.setupNewInstruction(new OperationCon());
+        processor.setupNewInstruction(new OperationEql());
+        processor.setupNewInstruction(new OperationInf());
+        processor.setupNewInstruction(new OperationMod());
 
 
         BufferedReader reader = new BufferedReader(new FileReader("prog.txt"));

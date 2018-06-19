@@ -1,8 +1,8 @@
 package processor;
 
-public class InstructionJmp extends Instruction {
+public class OperationJmp extends Operation {
 
-    public InstructionJmp() {
+    public OperationJmp() {
         super(5);
     }
 

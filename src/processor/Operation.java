@@ -3,13 +3,13 @@ package processor;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
-public abstract class Instruction {
+public abstract class Operation {
 
     Processor processor;
     Queue<Integer> parameters;
     private int code;
 
-    public Instruction(int code) {
+    public Operation(int code) {
         this.code = code;
         processor = null;
         parameters = new ArrayDeque<>();

@@ -1,8 +1,8 @@
 package processor;
 
-public class InstructionSet extends Instruction {
+public class OperationSet extends Operation {
 
-    public InstructionSet() {
+    public OperationSet() {
         super(7);
     }
 

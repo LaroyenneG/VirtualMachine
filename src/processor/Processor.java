@@ -8,13 +8,13 @@ public class Processor {
 
     private int cursor;
     private List<Vector<Integer>> program;
-    private Map<Integer, Instruction> instructions;
+    private Map<Integer, Operation> operations;
     private Memory memory;
 
     public Processor() {
         cursor = 0;
         program = new ArrayList<>();
-        instructions = new HashMap<>();
+        operations = new HashMap<>();
         memory = new Memory();
     }
 
@@ -27,32 +27,31 @@ public class Processor {
         while (cursor < program.size()) {
             Vector<Integer> line = program.get(cursor);
 
-            Instruction instruction = instructions.get(line.get(0));
+            Operation operation = operations.get(line.get(0));
 
-            if (instruction == null) {
-                System.err.println("invalid instruction");
+            if (operation == null) {
+                System.err.println("invalid operation");
                 System.exit(-3);
             }
 
             for (int i = 1; i < line.size(); i++) {
-                instruction.addParameters(line.get(i));
+                operation.addParameters(line.get(i));
             }
 
-            instruction.setProcessor(this);
+            operation.setProcessor(this);
 
-            instruction.execute();
+            operation.execute();
 
             cursor++;
         }
-
     }
 
     public Memory getMemory() {
         return memory;
     }
 
-    public void setupNewInstruction(Instruction instruction) {
-        instructions.put(instruction.getCode(), instruction);
+    public void setupNewInstruction(Operation operation) {
+        operations.put(operation.getCode(), operation);
     }
 
     public void addNewCommand(Vector<Integer> line) {

@@ -1,8 +1,8 @@
 package processor;
 
-public class InstructionEql extends Instruction {
+public class OperationEql extends Operation {
 
-    public InstructionEql() {
+    public OperationEql() {
         super(8);
     }
 

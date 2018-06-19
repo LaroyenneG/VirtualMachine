@@ -1,8 +1,8 @@
 package processor;
 
-public class InstructionAdd extends Instruction {
+public class OperationAdd extends Operation {
 
-    public InstructionAdd() {
+    public OperationAdd() {
         super(0);
     }
 

@@ -1,9 +1,9 @@
 package processor;
 
-public class InstructionSub extends Instruction {
+public class OperationMod extends Operation {
 
-    public InstructionSub() {
-        super(1);
+    public OperationMod() {
+        super(3);
     }
 
     @Override
@@ -13,7 +13,7 @@ public class InstructionSub extends Instruction {
         Integer[] n1Address = readAddress();
         Integer[] n2Address = readAddress();
 
-        Integer result = processor.getMemory().getValue(n1Address) - processor.getMemory().getValue(n2Address);
+        Integer result = processor.getMemory().getValue(n1Address) % processor.getMemory().getValue(n2Address);
 
         processor.getMemory().setValue(destAddress, result);
     }

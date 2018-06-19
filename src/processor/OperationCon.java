@@ -1,8 +1,8 @@
 package processor;
 
-public class InstructionCon extends Instruction {
+public class OperationCon extends Operation {
 
-    public InstructionCon() {
+    public OperationCon() {
         super(6);
     }
 
