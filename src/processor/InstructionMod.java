@@ -1,3 +1,5 @@
+package processor;
+
 public class InstructionMod extends Instruction {
 
     public InstructionMod() {

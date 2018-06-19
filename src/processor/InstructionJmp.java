@@ -1,3 +1,5 @@
+package processor;
+
 public class InstructionJmp extends Instruction {
 
     public InstructionJmp() {

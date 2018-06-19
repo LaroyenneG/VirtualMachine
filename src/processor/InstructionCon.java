@@ -1,3 +1,5 @@
+package processor;
+
 public class InstructionCon extends Instruction {
 
     public InstructionCon() {

@@ -1,7 +1,9 @@
-public class InstructionEql extends Instruction {
+package processor;
 
-    public InstructionEql() {
-        super(8);
+public class InstructionInf extends Instruction {
+
+    public InstructionInf() {
+        super(9);
     }
 
     @Override
@@ -13,7 +15,7 @@ public class InstructionEql extends Instruction {
 
         Integer result = 0;
 
-        if (processor.getMemory().getValue(n1Address).equals(processor.getMemory().getValue(n2Address))) {
+        if (processor.getMemory().getValue(n1Address) < processor.getMemory().getValue(n2Address)) {
             result = 1;
         }
 
