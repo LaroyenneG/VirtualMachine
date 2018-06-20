@@ -1,12 +1,12 @@
 package processor.type;
 
-public class Character extends Type {
+public class Char extends Type {
 
     public static final int CODE = 4;
 
     private char c;
 
-    public Character(char c) {
+    public Char(char c) {
         this.c = c;
     }
 

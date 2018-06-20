@@ -1,7 +1,9 @@
 package processor.operation;
 
 import processor.type.Address;
+import processor.type.Bool;
 import processor.type.Number;
+import processor.type.Type;
 
 public class OperationSet extends Operation {
 
@@ -10,10 +12,32 @@ public class OperationSet extends Operation {
     }
 
     @Override
-    public void execute() {
+    public void execute() throws InvalidCodeTypeException {
 
         Address address = readAddress();
 
-        processor.getMemory().setValue(address, new Number(parameters.remove()));
+        int code = parameters.remove();
+
+        Type type = null;
+
+        switch (code) {
+
+            case Address.CODE:
+                type = readAddress();
+                break;
+
+            case Number.CODE:
+                type = new Number(parameters.remove());
+                break;
+
+            case Bool.CODE:
+                type = new Bool(Boolean.parseBoolean(String.valueOf(parameters.remove())));
+                break;
+
+            default:
+                throw new InvalidCodeTypeException(code);
+        }
+
+        processor.getMemory().setValue(address, type);
     }
 }

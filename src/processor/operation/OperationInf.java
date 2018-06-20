@@ -1,7 +1,7 @@
 package processor.operation;
 
 import processor.type.Address;
-import processor.type.Boolean;
+import processor.type.Bool;
 import processor.type.InvalidTypeOperationException;
 import processor.type.Type;
 
@@ -21,9 +21,9 @@ public class OperationInf extends Operation {
         Type result = null;
 
         if (processor.getMemory().getValue(n1Address).isInf(processor.getMemory().getValue(n2Address))) {
-            result = new Boolean(true);
+            result = new Bool(true);
         } else {
-            result = new Boolean(false);
+            result = new Bool(false);
         }
 
         processor.getMemory().setValue(destAddress, result);

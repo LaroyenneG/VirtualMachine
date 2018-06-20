@@ -38,7 +38,7 @@ public abstract class Operation {
         return address;
     }
 
-    public abstract void execute() throws InvalidTypeOperationException;
+    public abstract void execute() throws InvalidTypeOperationException, InvalidCodeTypeException;
 
     public void setProcessor(Processor processor) {
         this.processor = processor;

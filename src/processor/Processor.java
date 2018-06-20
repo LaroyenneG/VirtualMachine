@@ -1,5 +1,6 @@
 package processor;
 
+import processor.operation.InvalidCodeTypeException;
 import processor.operation.Operation;
 import processor.type.InvalidTypeOperationException;
 
@@ -45,7 +46,7 @@ public class Processor {
 
             try {
                 operation.execute();
-            } catch (InvalidTypeOperationException e) {
+            } catch (InvalidTypeOperationException | InvalidCodeTypeException e) {
                 e.printStackTrace();
                 System.out.println(memory);
             }

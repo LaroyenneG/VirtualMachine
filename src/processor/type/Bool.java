@@ -1,12 +1,12 @@
 package processor.type;
 
-public class Boolean extends Type {
+public class Bool extends Type {
 
     public static final int CODE = 2;
 
     private boolean b;
 
-    public Boolean(boolean b) {
+    public Bool(boolean b) {
         this.b = b;
     }
 
@@ -18,9 +18,9 @@ public class Boolean extends Type {
             throw new InvalidTypeOperationException(CODE, type);
         }
 
-        Boolean bool = (Boolean) type;
+        Bool bool = (Bool) type;
 
-        return new Boolean(b | bool.b);
+        return new Bool(b | bool.b);
     }
 
     @Override
@@ -40,9 +40,9 @@ public class Boolean extends Type {
             throw new InvalidTypeOperationException(CODE, type);
         }
 
-        Boolean bool = (Boolean) type;
+        Bool bool = (Bool) type;
 
-        return new Boolean(b & bool.b);
+        return new Bool(b & bool.b);
     }
 
     @Override
@@ -64,7 +64,7 @@ public class Boolean extends Type {
             throw new InvalidTypeOperationException(CODE, type);
         }
 
-        Boolean bool = (Boolean) type;
+        Bool bool = (Bool) type;
 
         return b == bool.b;
     }

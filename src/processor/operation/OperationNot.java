@@ -1,7 +1,7 @@
 package processor.operation;
 
 import processor.type.Address;
-import processor.type.Boolean;
+import processor.type.Bool;
 import processor.type.InvalidTypeOperationException;
 
 public class OperationNot extends Operation {
@@ -18,12 +18,12 @@ public class OperationNot extends Operation {
         Address destAddress = readAddress();
         Address sourceAddress = readAddress();
 
-        Boolean result = null;
+        Bool result = null;
 
-        if (processor.getMemory().getValue(sourceAddress).eql(new Boolean(true))) {
-            result = new Boolean(true);
+        if (processor.getMemory().getValue(sourceAddress).eql(new Bool(true))) {
+            result = new Bool(true);
         } else {
-            result = new Boolean(false);
+            result = new Bool(false);
         }
 
         processor.getMemory().setValue(destAddress, result);
