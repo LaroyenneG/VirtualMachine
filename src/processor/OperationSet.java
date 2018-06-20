@@ -9,8 +9,7 @@ public class OperationSet extends Operation {
     @Override
     public void execute() {
 
-
-        Integer[] address = readAddress();
+        Address address = readAddress();
 
         processor.getMemory().setValue(address, parameters.remove());
     }

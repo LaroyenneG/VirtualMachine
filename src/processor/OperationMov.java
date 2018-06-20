@@ -9,8 +9,8 @@ public class OperationMov extends Operation {
     @Override
     public void execute() {
 
-        Integer[] destAddress = readAddress();
-        Integer[] sourceAddress = readAddress();
+        Address destAddress = readAddress();
+        Address sourceAddress = readAddress();
 
         processor.getMemory().setValue(destAddress, processor.getMemory().getValue(sourceAddress));
     }

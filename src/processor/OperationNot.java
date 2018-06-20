@@ -11,8 +11,8 @@ public class OperationNot extends Operation {
     public void execute() {
 
 
-        Integer[] destAddress = readAddress();
-        Integer[] sourceAddress = readAddress();
+        Address destAddress = readAddress();
+        Address sourceAddress = readAddress();
 
 
         Integer result = 1;

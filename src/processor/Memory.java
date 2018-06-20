@@ -1,6 +1,5 @@
 package processor;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,7 +7,7 @@ public class Memory {
 
     private Map<String, Integer> values;
 
-    private String tmpKey;
+    private Address tmpKey;
     private Integer tmpValue;
 
     public Memory() {
@@ -18,35 +17,22 @@ public class Memory {
     }
 
 
-    public void setValue(Integer[] key, Integer value) {
+    public void setValue(Address key, Integer value) {
 
-        if (key.length != 12) {
-            System.err.println("invalid addr : " + Arrays.toString(key));
-            System.exit(-1);
-        }
-
-        tmpKey = Arrays.toString(key);
+        tmpKey = key;
         tmpValue = value;
 
-        values.put(tmpKey, value);
+        values.put(tmpKey.getKey(), value);
     }
 
-    public Integer getValue(Integer[] key) {
-
-
-        String string = Arrays.toString(key);
-
+    public Integer getValue(Address key) {
 
         Integer value = null;
-        if (tmpKey.equals(string)) {
+
+        if (tmpKey.equals(key)) {
             value = tmpValue;
         } else {
-            value = values.get(string);
-        }
-
-        if (key.length != 12 || value == null) {
-            System.err.println("invalid addr : " + Arrays.toString(key));
-            System.exit(-1);
+            value = values.get(key.getKey());
         }
 
         return value;

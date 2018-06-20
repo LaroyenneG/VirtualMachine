@@ -9,9 +9,9 @@ public class OperationInf extends Operation {
     @Override
     public void execute() {
 
-        Integer[] destAddress = readAddress();
-        Integer[] n1Address = readAddress();
-        Integer[] n2Address = readAddress();
+        Address destAddress = readAddress();
+        Address n1Address = readAddress();
+        Address n2Address = readAddress();
 
         Integer result = 0;
 

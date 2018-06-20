@@ -9,8 +9,7 @@ public class OperationCon extends Operation {
     @Override
     public void execute() {
 
-
-        Integer[] address = readAddress();
+        Address address = readAddress();
 
         Integer nbLine = parameters.remove();
 

@@ -4,7 +4,6 @@ import java.util.*;
 
 public class Processor {
 
-    public static final int ADDRESS_SIZE = 12;
 
     private int cursor;
     private List<Vector<Integer>> program;

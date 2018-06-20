@@ -23,12 +23,12 @@ public abstract class Operation {
         parameters.add(p);
     }
 
-    Integer[] readAddress() {
+    Address readAddress() {
 
-        Integer[] address = new Integer[Processor.ADDRESS_SIZE];
+        Address address = new Address();
 
-        for (int i = 0; i < address.length; i++) {
-            address[i] = parameters.remove();
+        for (int i = 0; i < Address.ADDRESS_SIZE; i++) {
+            address.setValues(parameters.remove());
         }
 
         return address;
