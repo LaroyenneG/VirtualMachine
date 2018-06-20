@@ -1,5 +1,8 @@
 package processor;
 
+import processor.operation.Operation;
+import processor.type.InvalidTypeOperationException;
+
 import java.util.*;
 
 public class Processor {
@@ -40,7 +43,12 @@ public class Processor {
 
             operation.setProcessor(this);
 
-            operation.execute();
+            try {
+                operation.execute();
+            } catch (InvalidTypeOperationException e) {
+                e.printStackTrace();
+                System.out.println(memory);
+            }
 
             cursor++;
         }

@@ -1,24 +1,13 @@
-import processor.*;
+import processor.Dictionnary;
+import processor.Processor;
+import processor.operation.*;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Vector;
 
 public class App {
 
-
-    public static Vector<Integer> convertor(String string) {
-
-
-        Vector<Integer> addr = new Vector<>();
-
-        for (int i = 0; i < string.length(); i++) {
-            addr.add(Integer.parseInt(String.valueOf(string.charAt(i))));
-        }
-
-        return addr;
-    }
 
     public static void main(String[] args) throws IOException {
 
@@ -37,8 +26,6 @@ public class App {
         processor.setupNewInstruction(new OperationMov());
         processor.setupNewInstruction(new OperationSup());
         processor.setupNewInstruction(new OperationNot());
-        processor.setupNewInstruction(new OperationAnd());
-        processor.setupNewInstruction(new OperationOr());
 
 
         BufferedReader reader = new BufferedReader(new FileReader("prog.txt"));
@@ -54,7 +41,6 @@ public class App {
         processor.execute();
 
         System.out.println("Time : " + (System.currentTimeMillis() - debut));
-
 
         System.out.println(processor.getMemory());
     }

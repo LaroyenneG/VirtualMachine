@@ -1,14 +1,17 @@
 package processor;
 
+import processor.type.Address;
+import processor.type.Type;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class Memory {
 
-    private Map<String, Integer> values;
+    private Map<String, Type> values;
 
     private Address tmpKey;
-    private Integer tmpValue;
+    private Type tmpValue;
 
     public Memory() {
         values = new HashMap<>();
@@ -17,7 +20,7 @@ public class Memory {
     }
 
 
-    public void setValue(Address key, Integer value) {
+    public void setValue(Address key, Type value) {
 
         tmpKey = key;
         tmpValue = value;
@@ -25,9 +28,9 @@ public class Memory {
         values.put(tmpKey.getKey(), value);
     }
 
-    public Integer getValue(Address key) {
+    public Type getValue(Address key) {
 
-        Integer value = null;
+        Type value = null;
 
         if (tmpKey.equals(key)) {
             value = tmpValue;
@@ -45,7 +48,7 @@ public class Memory {
 
         builder.append("Memory : \n");
 
-        for (Map.Entry<String, Integer> entry :
+        for (Map.Entry<String, Type> entry :
                 values.entrySet()) {
 
             builder.append('[');

@@ -1,4 +1,7 @@
-package processor;
+package processor.operation;
+
+import processor.type.Address;
+import processor.type.Number;
 
 public class OperationSet extends Operation {
 
@@ -11,6 +14,6 @@ public class OperationSet extends Operation {
 
         Address address = readAddress();
 
-        processor.getMemory().setValue(address, parameters.remove());
+        processor.getMemory().setValue(address, new Number(parameters.remove()));
     }
 }

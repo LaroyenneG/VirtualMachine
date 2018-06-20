@@ -1,4 +1,8 @@
-package processor;
+package processor.operation;
+
+import processor.Processor;
+import processor.type.Address;
+import processor.type.InvalidTypeOperationException;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -34,7 +38,7 @@ public abstract class Operation {
         return address;
     }
 
-    public abstract void execute();
+    public abstract void execute() throws InvalidTypeOperationException;
 
     public void setProcessor(Processor processor) {
         this.processor = processor;

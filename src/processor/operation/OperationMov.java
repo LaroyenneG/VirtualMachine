@@ -1,4 +1,6 @@
-package processor;
+package processor.operation;
+
+import processor.type.Address;
 
 public class OperationMov extends Operation {
 

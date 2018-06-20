@@ -1,4 +1,4 @@
-package processor;
+package processor.operation;
 
 public class OperationJmp extends Operation {
 
