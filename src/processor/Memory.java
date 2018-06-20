@@ -40,6 +40,23 @@ public class Memory {
 
     @Override
     public String toString() {
-        return values.toString();
+
+        StringBuilder builder = new StringBuilder();
+
+        builder.append("Memory : \n");
+
+        for (Map.Entry<String, Integer> entry :
+                values.entrySet()) {
+
+            builder.append('[');
+            builder.append(entry.getKey());
+            builder.append('|');
+            builder.append(entry.getValue());
+            builder.append(']');
+            builder.append('\n');
+        }
+
+
+        return new String(builder);
     }
 }
