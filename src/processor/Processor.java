@@ -1,8 +1,8 @@
 package processor;
 
-import processor.operation.InvalidCodeTypeException;
+import processor.exception.InvalidCodeTypeException;
+import processor.exception.InvalidTypeOperationException;
 import processor.operation.Operation;
-import processor.type.InvalidTypeOperationException;
 
 import java.util.*;
 

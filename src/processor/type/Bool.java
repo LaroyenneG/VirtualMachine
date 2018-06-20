@@ -1,5 +1,7 @@
 package processor.type;
 
+import processor.exception.InvalidTypeOperationException;
+
 public class Bool extends Type {
 
     public static final int CODE = 2;

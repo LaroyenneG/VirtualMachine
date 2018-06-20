@@ -1,5 +1,7 @@
 package processor.type;
 
+import processor.exception.InvalidTypeOperationException;
+
 public abstract class Type {
 
     public abstract Type add(Type type) throws InvalidTypeOperationException;

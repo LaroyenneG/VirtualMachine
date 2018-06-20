@@ -10,7 +10,6 @@ public class Number extends Type {
         this.n = n;
     }
 
-
     @Override
     public Type add(Type type) {
 
@@ -120,6 +119,10 @@ public class Number extends Type {
     @Override
     public String toString() {
         return String.valueOf(n);
+    }
+
+    public int getValue() {
+        return n;
     }
 }
 

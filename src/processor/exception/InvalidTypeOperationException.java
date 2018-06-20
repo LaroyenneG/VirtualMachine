@@ -1,4 +1,6 @@
-package processor.type;
+package processor.exception;
+
+import processor.type.Type;
 
 public class InvalidTypeOperationException extends Exception {
 
@@ -6,4 +8,7 @@ public class InvalidTypeOperationException extends Exception {
         super("Invalid type\nactual : " + actual.codeType() + " excepted : " + expected);
     }
 
+    public InvalidTypeOperationException(String msg) {
+        super(msg);
+    }
 }

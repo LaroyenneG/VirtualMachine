@@ -1,8 +1,8 @@
 package processor.operation;
 
+import processor.exception.InvalidTypeOperationException;
 import processor.type.Address;
 import processor.type.Bool;
-import processor.type.InvalidTypeOperationException;
 import processor.type.Type;
 
 public class OperationInf extends Operation {

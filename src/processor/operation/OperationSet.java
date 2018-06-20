@@ -1,5 +1,6 @@
 package processor.operation;
 
+import processor.exception.InvalidCodeTypeException;
 import processor.type.Address;
 import processor.type.Bool;
 import processor.type.Number;

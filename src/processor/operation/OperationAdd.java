@@ -1,7 +1,7 @@
 package processor.operation;
 
+import processor.exception.InvalidTypeOperationException;
 import processor.type.Address;
-import processor.type.InvalidTypeOperationException;
 import processor.type.Type;
 
 public class OperationAdd extends Operation {

@@ -1,8 +1,9 @@
 package processor.operation;
 
 import processor.Processor;
+import processor.exception.InvalidCodeTypeException;
+import processor.exception.InvalidTypeOperationException;
 import processor.type.Address;
-import processor.type.InvalidTypeOperationException;
 
 import java.util.ArrayDeque;
 import java.util.Queue;

@@ -1,4 +1,4 @@
-package processor.operation;
+package processor.exception;
 
 public class InvalidCodeTypeException extends Exception {
     public InvalidCodeTypeException(int code) {
