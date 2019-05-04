@@ -7,9 +7,9 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -Wextra -pedantic -g")
 
 include_directories(src)
 
-add_executable(VirtualProcessor
+add_executable(vp
         src/virtual-processor.c
         src/virtual-processor.h
         main.c)
 
-target_link_libraries(VirtualProcessor pthread)
+target_link_libraries(vp pthread)

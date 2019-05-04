@@ -12,8 +12,8 @@ Created by Guillaume Laroyenne on 03/05/19.
 #define MEMORY_BLOCK_SIZE 10
 #define MEMORY_SIZE_MAX_SIZE 100000
 
-typedef long double data_type_t;
-typedef long long operand_t;
+typedef long double vp_data_type_t;
+typedef long long vp_operand_t;
 
 typedef enum {
     ADD,
@@ -30,21 +30,21 @@ typedef enum {
     EQUAL,
     INPUT,
     OUTPUT
-} instruction_t;
+} vp_instruction_t;
 
 typedef struct {
-    instruction_t instruction;
-    operand_t right;
-    operand_t left;
-} line_t;
+    vp_instruction_t instruction;
+    vp_operand_t right;
+    vp_operand_t left;
+} vp_line_t;
 
 typedef struct {
-    data_type_t input[INPUT_OUTPUT_NUMBER];
-    data_type_t output[INPUT_OUTPUT_NUMBER];
-    data_type_t *memory;
+    vp_data_type_t input[INPUT_OUTPUT_NUMBER];
+    vp_data_type_t output[INPUT_OUTPUT_NUMBER];
+    vp_data_type_t *memory;
     size_t memory_size;
     size_t cursor;
-    line_t *lines;
+    vp_line_t *lines;
     size_t lines_size;
     pthread_mutex_t inMutex[INPUT_OUTPUT_NUMBER];
     pthread_cond_t inCond[INPUT_OUTPUT_NUMBER];
@@ -59,11 +59,12 @@ extern void freeVirtualProcessor(virtual_processor_t *virtualProcessor);
 
 extern pthread_t executeVirtualProcessor(virtual_processor_t *virtualProcessor);
 
-extern void writeVirtualProcessor(virtual_processor_t *virtualProcessor, size_t index, data_type_t value);
+extern void writeVirtualProcessor(virtual_processor_t *virtualProcessor, size_t index, vp_data_type_t value);
 
-extern data_type_t readVirtualProcessor(virtual_processor_t *virtualProcessor, size_t index);
+extern vp_data_type_t readVirtualProcessor(virtual_processor_t *virtualProcessor, size_t index);
 
-extern void appendLineVirtualProcessor(virtual_processor_t *virtualProcessor, instruction_t instruction, operand_t left,
-                                       operand_t right);
+extern void
+appendLineVirtualProcessor(virtual_processor_t *virtualProcessor, vp_instruction_t instruction, vp_operand_t left,
+                           vp_operand_t right);
 
 #endif //VIRTUALPROCESSOR_VIRTUAL_PROCESSOR_H
