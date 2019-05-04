@@ -47,7 +47,11 @@ virtual_processor_t *createVirtualProcessor() {
 
     virtualProcessor->cursor = 0;
 
-    virtualProcessor->lines = NULL;
+    virtualProcessor->lines = malloc(1);
+    if (virtualProcessor->lines == NULL) {
+        perror("malloc()");
+        exit(EXIT_FAILURE);
+    }
 
     virtualProcessor->lines_size = 0;
 
@@ -311,4 +315,24 @@ void *threadExecuteVirtualProcessor(void *args) {
     }
 
     pthread_exit(NULL);
+}
+
+
+void appendLineVirtualProcessor(virtual_processor_t *virtualProcessor, instruction_t instruction, operand_t left,
+                                operand_t right) {
+
+    virtualProcessor->lines = realloc(virtualProcessor->lines, sizeof(line_t) * (virtualProcessor->lines_size + 1));
+    if (virtualProcessor->lines == NULL) {
+        perror("realloc()");
+        exit(EXIT_FAILURE);
+    }
+
+    line_t line;
+    line.instruction = instruction;
+    line.right = right;
+    line.left = left;
+
+    virtualProcessor->lines[virtualProcessor->lines_size] = line;
+
+    virtualProcessor->lines_size++;
 }

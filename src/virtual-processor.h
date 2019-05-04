@@ -63,6 +63,9 @@ extern void writeVirtualProcessor(virtual_processor_t *virtualProcessor, size_t 
 
 extern data_type_t readVirtualProcessor(virtual_processor_t *virtualProcessor, size_t index);
 
+extern void appendLineVirtualProcessor(virtual_processor_t *virtualProcessor, instruction_t instruction, operand_t left,
+                                       operand_t right);
+
 static void executeLineVirtualProcessor(virtual_processor_t *virtualProcessor, line_t *line, bool *alive);
 
 static void instructionError(instruction_t instruction);
