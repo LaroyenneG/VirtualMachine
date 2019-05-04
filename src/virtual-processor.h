@@ -66,14 +66,4 @@ extern data_type_t readVirtualProcessor(virtual_processor_t *virtualProcessor, s
 extern void appendLineVirtualProcessor(virtual_processor_t *virtualProcessor, instruction_t instruction, operand_t left,
                                        operand_t right);
 
-static void executeLineVirtualProcessor(virtual_processor_t *virtualProcessor, line_t *line, bool *alive);
-
-static void instructionError(instruction_t instruction);
-
-static void writeMemoryVirtualProcessor(virtual_processor_t *virtualProcessor, size_t address, data_type_t value);
-
-static data_type_t readMemoryVirtualProcessor(virtual_processor_t *virtualProcessor, size_t address);
-
-static void *threadExecuteVirtualProcessor(void *args);
-
 #endif //VIRTUALPROCESSOR_VIRTUAL_PROCESSOR_H

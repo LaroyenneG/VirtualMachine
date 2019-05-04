@@ -13,6 +13,18 @@ Created by Guillaume Laroyenne on 03/05/19.
         readMemoryVirtualProcessor(virtualProcessor, right) \
         operator readMemoryVirtualProcessor(virtualProcessor, left))
 
+
+static void executeLineVirtualProcessor(virtual_processor_t *virtualProcessor, line_t *line, bool *alive);
+
+static void instructionError(instruction_t instruction);
+
+static void writeMemoryVirtualProcessor(virtual_processor_t *virtualProcessor, size_t address, data_type_t value);
+
+static data_type_t readMemoryVirtualProcessor(virtual_processor_t *virtualProcessor, size_t address);
+
+static void *threadExecuteVirtualProcessor(void *args);
+
+
 virtual_processor_t *createVirtualProcessor() {
 
     virtual_processor_t *virtualProcessor = malloc(sizeof(virtual_processor_t));
