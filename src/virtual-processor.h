@@ -47,7 +47,9 @@ typedef struct {
     line_t *lines;
     size_t lines_size;
     pthread_mutex_t inMutex[INPUT_OUTPUT_NUMBER];
+    pthread_cond_t inCond[INPUT_OUTPUT_NUMBER];
     pthread_mutex_t outMutex[INPUT_OUTPUT_NUMBER];
+    pthread_cond_t outCond[INPUT_OUTPUT_NUMBER];
 } virtual_processor_t;
 
 
