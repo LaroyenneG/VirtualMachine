@@ -14,9 +14,15 @@ int main(int argc, char **argv) {
 
     virtual_processor_t *virtualProcessor = createVirtualProcessor(1, 1);
 
+    appendLineVirtualProcessor(virtualProcessor, LET, 1, 0);
+
+    appendLineVirtualProcessor(virtualProcessor, LET, 2, 1);
+
+    appendLineVirtualProcessor(virtualProcessor, SUB, 1, 0);
+
     appendLineVirtualProcessor(virtualProcessor, INPUT, 0, 10);
 
-    appendLineVirtualProcessor(virtualProcessor, OUTPUT, 0, 10);
+    appendLineVirtualProcessor(virtualProcessor, OUTPUT, 0, 0);
 
     appendLineVirtualProcessor(virtualProcessor, EXIT, 0, 0);
 

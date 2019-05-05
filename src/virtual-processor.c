@@ -13,8 +13,8 @@ Created by Guillaume Laroyenne on 03/05/19.
 #include "virtual-processor.h"
 
 #define PROCESSOR_ARITHMETIC_OPERATION(left, operator, right) writeMemoryVirtualProcessor(virtualProcessor, right, \
-        readMemoryVirtualProcessor(virtualProcessor, right) \
-        operator readMemoryVirtualProcessor(virtualProcessor, left))
+        readMemoryVirtualProcessor(virtualProcessor, left) \
+        operator readMemoryVirtualProcessor(virtualProcessor, right))
 
 
 static void executeLineVirtualProcessor(virtual_processor_t *virtualProcessor, vp_line_t *line, bool *alive);
