@@ -38,7 +38,7 @@ int main(int argc, char **argv) {
 
     freeVirtualProcessor(virtualProcessor);
 
-    int s;
+    int s = 0;
 
     waitpid(pid, &s, 0);
 
