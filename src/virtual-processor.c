@@ -7,6 +7,9 @@ Created by Guillaume Laroyenne on 03/05/19.
 #include <math.h>
 #include <string.h>
 #include <pthread.h>
+#include <unistd.h>
+#include <sys/wait.h>
+
 #include "virtual-processor.h"
 
 #define PROCESSOR_ARITHMETIC_OPERATION(left, operator, right) writeMemoryVirtualProcessor(virtualProcessor, right, \
@@ -22,10 +25,11 @@ static void writeMemoryVirtualProcessor(virtual_processor_t *virtualProcessor, s
 
 static vp_data_type_t readMemoryVirtualProcessor(virtual_processor_t *virtualProcessor, size_t address);
 
-static void *threadExecuteVirtualProcessor(void *args);
+static vp_data_type_t inputVirtualProcessor(virtual_processor_t *virtualProcessor, size_t index);
 
+static void outputVirtualProcessor(virtual_processor_t *virtualProcessor, size_t index, vp_data_type_t value);
 
-virtual_processor_t *createVirtualProcessor() {
+virtual_processor_t *createVirtualProcessor(size_t input_size, size_t output_size) {
 
     virtual_processor_t *virtualProcessor = malloc(sizeof(virtual_processor_t));
     if (virtualProcessor == NULL) {
@@ -33,29 +37,30 @@ virtual_processor_t *createVirtualProcessor() {
         exit(EXIT_FAILURE);
     }
 
-    virtualProcessor->memory = malloc(sizeof(vp_data_type_t) * MEMORY_BLOCK_SIZE);
+    virtualProcessor->memory = malloc(sizeof(vp_data_type_t) * VP_MEMORY_BLOCK_SIZE);
     if (virtualProcessor->memory == NULL) {
         perror("malloc()");
         exit(EXIT_FAILURE);
     }
 
-    memset(virtualProcessor->input, 0, sizeof(vp_data_type_t) * INPUT_OUTPUT_NUMBER);
-    memset(virtualProcessor->output, 0, sizeof(vp_data_type_t) * INPUT_OUTPUT_NUMBER);
-
-    for (unsigned int i = 0; i < INPUT_OUTPUT_NUMBER; i++) {
-
-        pthread_mutex_init(&virtualProcessor->inMutex[i], NULL);
-        pthread_mutex_init(&virtualProcessor->outMutex[i], NULL);
-
-        pthread_cond_init(&virtualProcessor->inCond[i], NULL);
-        pthread_cond_init(&virtualProcessor->outCond[i], NULL);
-    }
-
-    virtualProcessor->memory_size = MEMORY_BLOCK_SIZE;
+    virtualProcessor->memory_size = VP_MEMORY_BLOCK_SIZE;
 
     for (unsigned int i = 0; i < virtualProcessor->memory_size; i++) {
         virtualProcessor->memory[i] = INFINITY;
     }
+
+    memset(virtualProcessor->input, 0, sizeof(int) * VP_INPUT_OUTPUT_MAX_SIZE);
+    memset(virtualProcessor->output, 0, sizeof(int) * VP_INPUT_OUTPUT_MAX_SIZE);
+
+    for (unsigned int i = 0; i < VP_INPUT_OUTPUT_MAX_SIZE; i++) {
+
+        virtualProcessor->input[i] = -1;
+        virtualProcessor->output[i] = -1;
+    }
+
+    virtualProcessor->input_size = input_size;
+    virtualProcessor->output_size = output_size;
+
 
     virtualProcessor->cursor = 0;
 
@@ -75,6 +80,16 @@ void freeVirtualProcessor(virtual_processor_t *virtualProcessor) {
 
     if (virtualProcessor != NULL) {
 
+        for (unsigned int i = 0; i < VP_INPUT_OUTPUT_MAX_SIZE; ++i) {
+
+            if (virtualProcessor->output[i] >= 0) {
+                close(virtualProcessor->output[i]);
+            }
+            if (virtualProcessor->input[i] >= 0) {
+                close(virtualProcessor->input[i]);
+            }
+        }
+
         free(virtualProcessor->lines);
         virtualProcessor->lines = NULL;
 
@@ -86,13 +101,88 @@ void freeVirtualProcessor(virtual_processor_t *virtualProcessor) {
 }
 
 
-pthread_t executeVirtualProcessor(virtual_processor_t *virtualProcessor) {
+pid_t executeVirtualProcessor(virtual_processor_t *virtualProcessor) {
 
-    pthread_t pthread;
+    static const unsigned int PIPE_DUP = 2;
 
-    pthread_create(&pthread, NULL, threadExecuteVirtualProcessor, virtualProcessor);
+    int outputPipe[VP_INPUT_OUTPUT_MAX_SIZE][PIPE_DUP];
+    int inputPipe[VP_INPUT_OUTPUT_MAX_SIZE][PIPE_DUP];
 
-    return pthread;
+    for (unsigned int i = 0; i < VP_INPUT_OUTPUT_MAX_SIZE; ++i) {
+        for (unsigned int j = 0; j < PIPE_DUP; ++j) {
+            outputPipe[j][i] = -1;
+            inputPipe[j][i] = -1;
+        }
+    }
+
+    for (unsigned int i = 0; i < virtualProcessor->input_size; ++i) {
+        if (pipe(inputPipe[i]) < 0) {
+            perror("pipe()");
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    for (unsigned int i = 0; i < virtualProcessor->output_size; ++i) {
+        if (pipe(outputPipe[i]) < 0) {
+            perror("pipe()");
+            exit(EXIT_FAILURE);
+        }
+    }
+
+
+    pid_t pid = fork();
+    if (pid < 0) {
+        perror("fork()");
+        exit(EXIT_FAILURE);
+    }
+
+    if (pid == 0) {
+
+        for (unsigned int i = 0; i < virtualProcessor->output_size; ++i) {
+            virtualProcessor->output[i] = outputPipe[i][1];
+            close(outputPipe[i][0]);
+        }
+
+        for (unsigned int i = 0; i < virtualProcessor->input_size; ++i) {
+            virtualProcessor->input[i] = inputPipe[i][0];
+            close(inputPipe[i][1]);
+        }
+
+
+        virtualProcessor->cursor = 0;
+
+        bool alive = virtualProcessor->lines > 0;
+
+        while (alive) {
+
+            vp_line_t *line = &virtualProcessor->lines[virtualProcessor->cursor];
+
+            executeLineVirtualProcessor(virtualProcessor, line, &alive);
+
+            virtualProcessor->cursor = (virtualProcessor->cursor + 1) % virtualProcessor->lines_size;
+            if (virtualProcessor->cursor < 0) {
+                virtualProcessor->cursor += virtualProcessor->lines_size;
+            }
+        }
+
+        freeVirtualProcessor(virtualProcessor);
+
+        exit(EXIT_SUCCESS);
+
+    } else {
+
+        for (unsigned int i = 0; i < virtualProcessor->output_size; ++i) {
+            virtualProcessor->output[i] = outputPipe[i][0];
+            close(outputPipe[i][1]);
+        }
+
+        for (unsigned int i = 0; i < virtualProcessor->input_size; ++i) {
+            virtualProcessor->input[i] = inputPipe[i][1];
+            close(inputPipe[i][0]);
+        }
+    }
+
+    return pid;
 }
 
 void executeLineVirtualProcessor(virtual_processor_t *virtualProcessor, vp_line_t *line, bool *alive) {
@@ -143,7 +233,7 @@ void executeLineVirtualProcessor(virtual_processor_t *virtualProcessor, vp_line_
 
         case MOD:
             writeMemoryVirtualProcessor(virtualProcessor, right,
-                                        (unsigned long long) readMemoryVirtualProcessor(virtualProcessor, right) %
+                                        (long long) readMemoryVirtualProcessor(virtualProcessor, right) %
                                         (unsigned long long) readMemoryVirtualProcessor(virtualProcessor, left));
             break;
 
@@ -165,7 +255,7 @@ void executeLineVirtualProcessor(virtual_processor_t *virtualProcessor, vp_line_
             break;
 
         case LET:
-            if (right >= MEMORY_SIZE_MAX_SIZE) {
+            if (right >= VP_MEMORY_SIZE_MAX_SIZE) {
                 instructionError(instruction);
             }
 
@@ -173,33 +263,20 @@ void executeLineVirtualProcessor(virtual_processor_t *virtualProcessor, vp_line_
             break;
 
         case INPUT:
-            if (left < 0 || left >= INPUT_OUTPUT_NUMBER || right >= MEMORY_SIZE_MAX_SIZE) {
+            if (left < 0 || left >= VP_INPUT_OUTPUT_MAX_SIZE || right >= VP_MEMORY_SIZE_MAX_SIZE ||
+                virtualProcessor->input[left] < 0) {
                 instructionError(instruction);
             }
 
-            pthread_mutex_lock(&virtualProcessor->inMutex[left]);
-
-            pthread_cond_wait(&virtualProcessor->inCond[left], &virtualProcessor->inMutex[left]);
-
-            writeMemoryVirtualProcessor(virtualProcessor, right, virtualProcessor->input[left]);
-
-            pthread_mutex_unlock(&virtualProcessor->inMutex[left]);
-
+            writeMemoryVirtualProcessor(virtualProcessor, right, inputVirtualProcessor(virtualProcessor, left));
             break;
 
         case OUTPUT:
-            if (left < 0 || left >= INPUT_OUTPUT_NUMBER) {
+            if (left < 0 || left >= VP_INPUT_OUTPUT_MAX_SIZE || virtualProcessor->output[left] < 0) {
                 instructionError(instruction);
             }
 
-            pthread_mutex_lock(&virtualProcessor->outMutex[left]);
-
-            virtualProcessor->output[left] = right;
-
-            pthread_cond_signal(&virtualProcessor->outCond[left]);
-
-            pthread_mutex_unlock(&virtualProcessor->outMutex[left]);
-
+            outputVirtualProcessor(virtualProcessor, left, readMemoryVirtualProcessor(virtualProcessor, right));
             break;
 
         default:
@@ -229,9 +306,10 @@ void instructionError(vp_instruction_t instruction) {
 
 void writeMemoryVirtualProcessor(virtual_processor_t *virtualProcessor, size_t address, vp_data_type_t value) {
 
-    while (address <= virtualProcessor->memory_size) {
 
-        size_t size = virtualProcessor->memory_size + MEMORY_BLOCK_SIZE;
+    while (address >= virtualProcessor->memory_size) {
+
+        size_t size = virtualProcessor->memory_size + VP_MEMORY_BLOCK_SIZE;
 
         virtualProcessor->memory = realloc(virtualProcessor->memory, sizeof(vp_data_type_t) * size);
         if (virtualProcessor->memory == NULL) {
@@ -240,7 +318,6 @@ void writeMemoryVirtualProcessor(virtual_processor_t *virtualProcessor, size_t a
         }
 
         for (size_t i = virtualProcessor->memory_size; i < size; i++) {
-
             virtualProcessor->memory[i] = INFINITY;
         }
 
@@ -273,62 +350,34 @@ vp_data_type_t readMemoryVirtualProcessor(virtual_processor_t *virtualProcessor,
 
 void writeVirtualProcessor(virtual_processor_t *virtualProcessor, size_t index, vp_data_type_t value) {
 
-    if (index >= INPUT_OUTPUT_NUMBER) {
+    if (index >= VP_INPUT_OUTPUT_MAX_SIZE || virtualProcessor->input[index] < 0) {
         fprintf(stderr, "invalid in out index\n");
         exit(EXIT_FAILURE);
     }
 
-    pthread_mutex_lock(&virtualProcessor->inMutex[index]);
-
-    virtualProcessor->input[index] = value;
-
-    pthread_cond_signal(&virtualProcessor->inCond[index]);
-
-    pthread_mutex_unlock(&virtualProcessor->inMutex[index]);
+    ssize_t ssize = write(virtualProcessor->input[index], &value, sizeof(vp_data_type_t));
+    if (ssize != sizeof(vp_data_type_t)) {
+        perror("write()");
+        exit(EXIT_FAILURE);
+    }
 }
 
 vp_data_type_t readVirtualProcessor(virtual_processor_t *virtualProcessor, size_t index) {
 
-    if (index >= INPUT_OUTPUT_NUMBER) {
+    if (index >= VP_INPUT_OUTPUT_MAX_SIZE || virtualProcessor->output[index] < 0) {
         fprintf(stderr, "invalid in out index\n");
         exit(EXIT_FAILURE);
     }
 
-    vp_data_type_t value = 0;
+    vp_data_type_t value = INFINITY;
 
-    pthread_mutex_lock(&virtualProcessor->outMutex[index]);
-
-    pthread_cond_wait(&virtualProcessor->outCond[index], &virtualProcessor->outMutex[index]);
-
-    virtualProcessor->output[index] = value;
-
-    pthread_mutex_unlock(&virtualProcessor->outMutex[index]);
-
-    return value;
-}
-
-
-void *threadExecuteVirtualProcessor(void *args) {
-
-    virtual_processor_t *virtualProcessor = args;
-
-    virtualProcessor->cursor = 0;
-
-    bool alive = virtualProcessor->lines > 0;
-
-    while (alive) {
-
-        vp_line_t *line = &virtualProcessor->lines[virtualProcessor->cursor];
-
-        executeLineVirtualProcessor(virtualProcessor, line, &alive);
-
-        virtualProcessor->cursor = (virtualProcessor->cursor + 1) % virtualProcessor->lines_size;
-        if (virtualProcessor->cursor < 0) {
-            virtualProcessor->cursor += virtualProcessor->lines_size;
-        }
+    ssize_t ssize = read(virtualProcessor->output[index], &value, sizeof(vp_data_type_t));
+    if (ssize != sizeof(vp_data_type_t)) {
+        perror("read()");
+        exit(EXIT_FAILURE);
     }
 
-    pthread_exit(NULL);
+    return value;
 }
 
 
@@ -349,4 +398,27 @@ void appendLineVirtualProcessor(virtual_processor_t *virtualProcessor, vp_instru
     virtualProcessor->lines[virtualProcessor->lines_size] = line;
 
     virtualProcessor->lines_size++;
+}
+
+
+vp_data_type_t inputVirtualProcessor(virtual_processor_t *virtualProcessor, size_t index) {
+
+    vp_data_type_t value = INFINITY;
+
+    ssize_t ssize = read(virtualProcessor->input[index], &value, sizeof(vp_data_type_t));
+    if (ssize != sizeof(vp_data_type_t)) {
+        perror("read()");
+        exit(EXIT_FAILURE);
+    }
+
+    return value;
+}
+
+void outputVirtualProcessor(virtual_processor_t *virtualProcessor, size_t index, vp_data_type_t value) {
+
+    ssize_t ssize = write(virtualProcessor->output[index], &value, sizeof(vp_data_type_t));
+    if (ssize != sizeof(vp_data_type_t)) {
+        perror("write()");
+        exit(EXIT_FAILURE);
+    }
 }

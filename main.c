@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <zconf.h>
+#include <wait.h>
 
 #include "virtual-processor.h"
 
@@ -11,28 +12,29 @@ int main(int argc, char **argv) {
         exit(EXIT_FAILURE);
     }
 
-    virtual_processor_t *virtualProcessor = createVirtualProcessor();
+    virtual_processor_t *virtualProcessor = createVirtualProcessor(1, 1);
 
-    appendLineVirtualProcessor(virtualProcessor, INPUT, 1, 10);
+    appendLineVirtualProcessor(virtualProcessor, INPUT, 0, 10);
 
-    appendLineVirtualProcessor(virtualProcessor, OUTPUT, 1, 10);
+    appendLineVirtualProcessor(virtualProcessor, OUTPUT, 0, 10);
 
     appendLineVirtualProcessor(virtualProcessor, EXIT, 0, 0);
 
-    pthread_t pthread = executeVirtualProcessor(virtualProcessor);
-
+    pid_t pid = executeVirtualProcessor(virtualProcessor);
 
     vp_data_type_t value = 5;
 
-    writeVirtualProcessor(virtualProcessor, 1, value);
+    writeVirtualProcessor(virtualProcessor, 0, value);
 
-    vp_data_type_t result = readVirtualProcessor(virtualProcessor, 1);
+    vp_data_type_t result = readVirtualProcessor(virtualProcessor, 0);
 
     printf("%LF! = %Lf\n", value, result);
 
     freeVirtualProcessor(virtualProcessor);
 
-    pthread_join(pthread, NULL);
+    int s;
+
+    waitpid(pid, &s, 0);
 
     return EXIT_SUCCESS;
 }

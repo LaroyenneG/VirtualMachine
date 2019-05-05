@@ -5,12 +5,11 @@ Created by Guillaume Laroyenne on 03/05/19.
 #ifndef VIRTUALPROCESSOR_VIRTUAL_PROCESSOR_H
 #define VIRTUALPROCESSOR_VIRTUAL_PROCESSOR_H
 
-#include <pthread.h>
 #include <stdbool.h>
 
-#define INPUT_OUTPUT_NUMBER 10
-#define MEMORY_BLOCK_SIZE 10
-#define MEMORY_SIZE_MAX_SIZE 100000
+#define VP_INPUT_OUTPUT_MAX_SIZE 10
+#define VP_MEMORY_BLOCK_SIZE 10
+#define VP_MEMORY_SIZE_MAX_SIZE 100000
 
 typedef long double vp_data_type_t;
 typedef long long vp_operand_t;
@@ -39,25 +38,23 @@ typedef struct {
 } vp_line_t;
 
 typedef struct {
-    vp_data_type_t input[INPUT_OUTPUT_NUMBER];
-    vp_data_type_t output[INPUT_OUTPUT_NUMBER];
+    int input[VP_INPUT_OUTPUT_MAX_SIZE];
+    int output[VP_INPUT_OUTPUT_MAX_SIZE];
     vp_data_type_t *memory;
+    vp_line_t *lines;
+    size_t input_size;
+    size_t output_size;
     size_t memory_size;
     size_t cursor;
-    vp_line_t *lines;
     size_t lines_size;
-    pthread_mutex_t inMutex[INPUT_OUTPUT_NUMBER];
-    pthread_cond_t inCond[INPUT_OUTPUT_NUMBER];
-    pthread_mutex_t outMutex[INPUT_OUTPUT_NUMBER];
-    pthread_cond_t outCond[INPUT_OUTPUT_NUMBER];
 } virtual_processor_t;
 
 
-extern virtual_processor_t *createVirtualProcessor();
+extern virtual_processor_t *createVirtualProcessor(size_t input_size, size_t output_size);
 
 extern void freeVirtualProcessor(virtual_processor_t *virtualProcessor);
 
-extern pthread_t executeVirtualProcessor(virtual_processor_t *virtualProcessor);
+extern pid_t executeVirtualProcessor(virtual_processor_t *virtualProcessor);
 
 extern void writeVirtualProcessor(virtual_processor_t *virtualProcessor, size_t index, vp_data_type_t value);
 
